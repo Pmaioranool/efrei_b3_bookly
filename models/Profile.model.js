@@ -38,8 +38,8 @@ const profileSchema = new Schema(
 const ProfileModel = mongoose.model("Profile", profileSchema);
 
 class Profile {
-  static async create({ _id, preferences = {}, history = [] }) {
-    const doc = await ProfileModel.create({ _id, preferences, history });
+  static async create({ preferences = {}, history = [] }) {
+    const doc = await ProfileModel.create({ preferences, history });
     return doc.toObject();
   }
 
