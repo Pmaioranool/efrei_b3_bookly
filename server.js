@@ -8,6 +8,51 @@ const { connectMongo } = require("./config/db.mongo");
 app.use(cors());
 app.use(express.json());
 
+// Connexion aux bases de données avant de démarrer le serveur
+async function startServer() {
+  try {
+    // Connexion MongoDB
+    await connectMongo();
+
+    // Test PostgreSQL
+    await pool.query("SELECT NOW()");
+
+    // Mount routes
+    const profileRoutes = require("./routes/profile.routes");
+    app.use("/api/profiles", profileRoutes);
+
+    const bookRoutes = require("./routes/book.routes");
+    app.use("/api/books", bookRoutes);
+
+    const userRoutes = require("./routes/user.routes");
+    app.use("/api/users", userRoutes);
+
+    // Health check route
+    app.get("/api/status", (req, res) => {
+      res.json({ status: "ok", time: new Date().toISOString() });
+    });
+
+    // 404
+    app.use((req, res) => res.status(404).json({ error: "Route inconnue" }));
+
+    // Error handler
+    app.use((err, req, res, next) => {
+      console.error("Erreur serveur:", err.message);
+      res.status(500).json({ error: "Erreur interne serveur" });
+    });
+
+    // Start server
+    app.listen(PORT, () =>
+      console.log(`API prête sur http://localhost:${PORT}`)
+    );
+  } catch (error) {
+    console.error("Erreur de démarrage:", error);
+    process.exit(1);
+  }
+}
+
+startServer();
+
 // Test des connexions aux bases de données
 app.get("/api/test-db", async (req, res) => {
   try {
@@ -32,6 +77,12 @@ app.get("/api/test-db", async (req, res) => {
 });
 
 // Mount routes
+const userRoutes = require("./routes/user.routes");
+app.use("/api/users", userRoutes);
+const profileRoutes = require("./routes/profile.routes");
+app.use("/api/profiles", profileRoutes);
+const bookRoutes = require("./routes/book.routes");
+app.use("/api/books", bookRoutes);
 
 // Health
 app.get("/api/status", (req, res) => {

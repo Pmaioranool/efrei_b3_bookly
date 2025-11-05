@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;
 
 const profileSchema = new Schema(
   {
-    _id: {
-      type: Number,
-      required: true,
-    },
     preferences: {
       favoriteGenres: [String],
       favoriteAuthors: [String],
@@ -31,7 +27,7 @@ const profileSchema = new Schema(
     ],
   },
   {
-    _id: false,
+    _id: true,
   }
 );
 
