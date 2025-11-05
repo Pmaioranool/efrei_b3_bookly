@@ -35,6 +35,34 @@ const profileSchema = new Schema(
   }
 );
 
-const Profile = mongoose.model("Profile", profileSchema);
+const ProfileModel = mongoose.model("Profile", profileSchema);
+
+class Profile {
+  static async create({ _id, preferences = {}, history = [] }) {
+    const doc = await ProfileModel.create({ _id, preferences, history });
+    return doc.toObject();
+  }
+
+  static async getAll() {
+    return await ProfileModel.find().lean();
+  }
+
+  static async getById(id) {
+    return await ProfileModel.findById(id).lean();
+  }
+
+  static async update(id, fields = {}) {
+    if (Object.keys(fields).length === 0) return this.getById(id);
+    return await ProfileModel.findByIdAndUpdate(id, fields, {
+      new: true,
+      runValidators: true,
+    }).lean();
+  }
+
+  static async deleteById(id) {
+    await ProfileModel.findByIdAndDelete(id);
+    return { deleted: true };
+  }
+}
 
 module.exports = Profile;
