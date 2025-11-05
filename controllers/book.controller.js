@@ -1,16 +1,15 @@
 const Book = require("../models/Book.model");
 
-exports.getBook = (req, res, next) => {
+exports.getBook = async (req, res, next) => {
   try {
-    const book = Book.getAll();
-    if (!book) return res.status(404).json({ error: "Book non trouvé" });
+    let book = await Book.getAll();
     return res.status(200).json(book);
   } catch (e) {
     next(e);
   }
 };
 
-exports.createBook = (req, res, next) => {
+exports.createBook = async (req, res, next) => {
   try {
     const { title, author, available } = req.body;
     if (
@@ -22,7 +21,8 @@ exports.createBook = (req, res, next) => {
         .status(400)
         .json({ error: "title, author et available (booolean) sont requis" });
     }
-    const created = Book.create({ title, author, available });
+    const created = await Book.create({ title, author, available });
+    console.log(created);
     return res.status(201).json(created);
   } catch (e) {
     next(e);
