@@ -1,6 +1,6 @@
 const User = require("../models/User.model");
 
-exports.getUser = () => {
+exports.getUser = (req, res, next) => {
   try {
     const user = User.getAll();
     if (!user) return res.status(404).json({ error: "User non trouvé" });

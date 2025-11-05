@@ -1,6 +1,6 @@
 const Profile = require("../models/Profile.model");
 
-exports.getProfile = () => {
+exports.getProfile = (req, res, next) => {
   try {
     const profile = Profile.getById(req.params.id);
     if (!profile) return res.status(404).json({ error: "Profile non trouvé" });

@@ -1,6 +1,6 @@
 const Book = require("../models/Book.model");
 
-exports.getBook = () => {
+exports.getBook = (req, res, next) => {
   try {
     const book = Book.getAll();
     if (!book) return res.status(404).json({ error: "Book non trouvé" });
